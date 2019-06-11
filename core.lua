@@ -61,6 +61,11 @@ function addon:ADDON_LOADED(name)
 
 	session = 0
 
+	-- slash commands
+	_G['SLASH_' .. addonName .. '1'] = '/rmoney'
+	_G['SLASH_' .. addonName .. '2'] = '/rainmoney'
+	_G.SlashCmdList[addonName] = self.Command
+
 	self:UnregisterEvent('ADDON_LOADED')
 
 	self:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -100,6 +105,26 @@ function addon:PLAYER_LOGOUT()
 			local day = keys[i]
 			days[day] = nil
 		end
+	end
+end
+
+function addon.Command(message)
+	local command, name = string.split(' ', message)
+	name = name or ''
+
+	if command == 'delete' then
+		for char, info in next, totals do
+			if char == name then
+				if info == player then
+					return print(string.format('|cff0099cc%s|r: You cannot delete the current character.', addonName))
+				end
+				totals[char] = nil
+				return print(string.format('|cff0099cc%s|r: Deleted character %q.', addonName, char))
+			end
+		end
+		print(string.format('|cff0099cc%s|r: Character %q not found.', addonName, name))
+	else
+		print(string.format('|cff0099cc%s|r: Unknown command %q.', addonName, command))
 	end
 end
 
