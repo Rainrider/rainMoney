@@ -1,0 +1,10 @@
+## Interface: 80100
+## Title: rainMoney
+## Notes: Data broker display for money
+## Version: @project-version@
+## Author: Rainrider
+## SavedVariables: rainMoneyDB
+## OptionalDeps: LibStub
+
+libs\libs.xml
+core.lua
