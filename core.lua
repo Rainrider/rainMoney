@@ -1,6 +1,6 @@
 local addonName = ...
 
-local days, totals, session, player, others, sessionStart
+local days, totals, session, player, others, sessionStart, broker
 
 local function spairs(tbl, desc)
 	local keys = {}
@@ -83,6 +83,7 @@ function addon:PLAYER_MONEY()
 	local money = _G.GetMoney()
 	local amount = money - player.money
 	player.money = money
+	broker.value = _G.GetMoneyString(money, true)
 
 	if amount ~= money then
 		local today = GetToday()
@@ -155,7 +156,7 @@ end
 addon:RegisterEvent('ADDON_LOADED')
 
 local LDB = _G.LibStub('LibDataBroker-1.1')
-LDB:NewDataObject(addonName, {
+broker = LDB:NewDataObject(addonName, {
 	type = 'data source',
 	label = _G.MONEY,
 	icon = [=[Interface\Minimap\Tracking\Auctioneer]=],
