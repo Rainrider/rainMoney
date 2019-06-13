@@ -1,6 +1,7 @@
 local addonName = ...
 
 local days, totals, session, player, others, sessionStart, broker
+local timeOffset = 0
 
 local function spairs(tbl, desc)
 	local keys = {}
@@ -23,6 +24,14 @@ local function spairs(tbl, desc)
 	return iter, tbl
 end
 
+local function SetTimeOffset()
+	local current = _G.date('*t')
+	local utc = _G.date('!*t')
+	utc.isdst = current.isdst
+
+	timeOffset = _G.difftime(_G.time(current) - _G.time(utc))
+end
+
 local addon = _G.CreateFrame('Frame')
 addon:SetScript('OnEvent', function(self, event, ...)
 	self[event](self, ...)
@@ -30,7 +39,7 @@ end)
 
 local function GetToday()
 	-- number of days since epoch
-	return math.ceil(_G.GetServerTime() / (24 * 60 * 60))
+	return math.ceil((_G.time() + timeOffset) / (24 * 60 * 60))
 end
 
 function addon:ADDON_LOADED(name)
@@ -60,6 +69,7 @@ function addon:ADDON_LOADED(name)
 	end
 
 	session = 0
+	SetTimeOffset()
 
 	-- slash commands
 	_G['SLASH_' .. addonName .. '1'] = '/rmoney'
